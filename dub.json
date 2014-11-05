@@ -1,0 +1,21 @@
+{
+	"name": "fabd",
+	"description": "Bindings to libfab, a terminal formatting library",
+	"copyright": "Copyright © 2014, Matt Soucy",
+	"license": "MIT",
+	"authors": [
+		"Matt Soucy",
+		"Ross Delinger"
+	],
+	"dependencies": {
+	},
+	"importPaths": [
+		"import"
+	],
+	"sourcePaths": [
+		"import"
+	],
+	"libs": [
+		"fab"
+	]
+}
