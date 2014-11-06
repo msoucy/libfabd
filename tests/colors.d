@@ -9,14 +9,14 @@ enum TSTRING = "Hello There";
 void main() {
 	with(libfab.Color) {
 		foreach(fmt; TypeTuple!(BOLD, ITALIC, UNDER, UNDER2, STRIKE, BLINK, FLIP)) {
-			"%s-ing it up: '%s'".writefln(fmt, TSTRING.apply_format(fmt));
+			"%s-ing it up: '%s'".writefln(fmt, TSTRING.apply_color(fmt));
 		}
 
 		foreach(prefix; TypeTuple!("", "H", "BG")) {
 			"------------------".writeln();
 			foreach(color; BASECOLORS) {
 				enum name = "%s%s".format(prefix, color);
-				"%s-ing it up: '%s'".writefln(name, TSTRING.apply_format(mixin(name)));
+				"%s-ing it up: '%s'".writefln(name, TSTRING.apply_color(mixin(name)));
 			}
 		}
 
@@ -29,7 +29,7 @@ void main() {
 		"------------------".writeln();
 		foreach(fg; BASECOLORS) {
 			foreach(bg; BASECOLORS) {
-				"XX".apply_format(mixin(fg)).apply_format(mixin("BG"~bg)).write(" ");
+				"XX".apply_color(mixin(fg)).apply_color(mixin("BG"~bg)).write(" ");
 			}
 			writeln();
 		}

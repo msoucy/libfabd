@@ -15,13 +15,13 @@ private template MakeBinding(string name) {
 	mixin("alias " ~ name ~ " = BindFunc;");
 }
 
-string apply_format(string line, Color c)
+string apply_color(string line, Color c)
 {
-	return apply_format(c, line);
+	return apply_color(c, line);
 }
-string apply_format(Color c, string line)
+string apply_color(Color c, string line)
 {
-	return libfab.fab.apply_format(c, line.toStringz).fromStringz.idup;
+	return libfab.fab.apply_color(c, line.toStringz).fromStringz.idup;
 }
 
 mixin MakeBinding!"foreground_256";

@@ -42,12 +42,8 @@ struct rgb_t {
 	int b;
 }
 
-rgb_t xterm_to_rgb(int xcolor);
-int xterm_to_rgb_i(int xcolor);
-int rgb_to_xterm(int r, int g, int b);
+char *apply_color(Color c, const(char)* line);
 
-char *apply_format(Color c, const(char)*line);
-
-char *foreground_256(rgb_t color, const(char) *line);
-char *background_256(rgb_t color, const(char) *line);
-char *highlight_256(rgb_t color, const(char) *line);
+char *foreground_256(rgb_t color, const(char)* line);
+char *background_256(rgb_t color, const(char)* line);
+char *highlight_256(rgb_t color, const(char)* line);
