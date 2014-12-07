@@ -8,6 +8,7 @@ alias Color = cfab.Color;
 
 import std.string;
 import std.typecons;
+import std.conv;
 
 class CString {
 	this(char* ptr) {
@@ -15,7 +16,7 @@ class CString {
 	}
 	void toString(scope void delegate(const(char)[]) sink) const
 	{
-		sink(raw.fromStringz);
+		sink(raw.to!string);
 	}
 	immutable(char)* toStringz() pure nothrow
 	{
@@ -76,7 +77,7 @@ auto Image(string path)
 		void toString(scope void delegate(const(char)[]) sink) const
 		{
 			auto img_text = cfab.image_to_string(data);
-			sink(img_text.fromStringz);
+			sink(img_text.to!string);
 			core.stdc.stdlib.free(img_text);
 
 		}
