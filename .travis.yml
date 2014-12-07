@@ -1,8 +1,9 @@
 language: d
 
 install:
+  - sudo apt-get update
+  - sudo apt-get install -y imagemagick libmagickwand4 libmagickwand-dev
   - DUB_VER=0.9.22
-
   - if [[ "$DC" = "dmd" ]]; then
       BIN_PATH=${HOME}/dmd2/linux/bin64;
       LIB_PATH=${HOME}/dmd2/linux/lib64;
