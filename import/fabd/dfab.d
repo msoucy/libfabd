@@ -84,3 +84,47 @@ auto Image(string path)
 		cfab.xcolor_image_t* data;
 	};
 }
+
+unittest {
+	// Test styles
+	import std.algorithm;
+	import std.range : chain;
+	import std.conv;
+	enum T = "Hello There";
+	auto test_generic(Color c, string prefix, string suffix)
+	{
+		return equal(T.apply_color(c).to!string, chain(prefix, T, suffix));
+	}
+	with(Color) {
+		assert(test_generic(BOLD, "\x1b[1m", "\x1b[22m"));
+		assert(test_generic(ITALIC, "\x1b[3m", "\x1b[23m"));
+		assert(test_generic(UNDER, "\x1b[4m", "\x1b[24m"));
+		assert(test_generic(UNDER2, "\x1b[21m", "\x1b[24m"));
+		assert(test_generic(STRIKE, "\x1b[9m", "\x1b[29m"));
+		assert(test_generic(BLINK, "\x1b[5m", "\x1b[25m"));
+		assert(test_generic(FLIP, "\x1b[7m", "\x1b[27m"));
+	}
+}
+
+unittest {
+	// Test colors
+	import std.algorithm;
+	import std.range;
+	import std.conv;
+	enum T = "Hello There";
+	auto test_color(Color c, string prefix)
+	{
+		return equal(T.apply_color(c).to!string, chain(prefix, T, "\x1b[39m"));
+	}
+	with(Color) {
+		assert(test_color(BLACK, "\x1b[30m"));
+		assert(test_color(RED, "\x1b[31m"));
+		assert(test_color(GREEN, "\x1b[32m"));
+		assert(test_color(YELLOW, "\x1b[33m"));
+		assert(test_color(BLUE, "\x1b[34m"));
+		assert(test_color(MAGENTA, "\x1b[35m"));
+		assert(test_color(CYAN, "\x1b[36m"));
+		assert(test_color(WHITE, "\x1b[37m"));
+	}
+}
+
