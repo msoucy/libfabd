@@ -2,6 +2,7 @@ import std.string;
 import std.stdio;
 import std.typetuple;
 import libfab;
+import libfab.fab;
 
 enum BASECOLORS = TypeTuple!("BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE");
 enum TSTRING = "Hello There";
@@ -21,7 +22,7 @@ void main() {
 		}
 
 		"------------------".writeln();
-		rgb_t c = {120, 0, 100};
+		auto c = rgb(120, 0, 100);
 		"256FG-ing it up: '%s'".writefln(TSTRING.foreground_256(c));
 		"256BG-ing it up: '%s'".writefln(TSTRING.background_256(c));
 		"256HI-ing it up: '%s'".writefln(TSTRING.highlight_256(c));
@@ -33,10 +34,5 @@ void main() {
 			}
 			writeln();
 		}
-
-		/+
-		xcolor_image_t *image = image_to_xterm("/home/rossdylan/Downloads/10469154_10204348274165961_3225173628639169213_o.jpg");
-		reduce_image(image);
-		+/
 	}
 }
