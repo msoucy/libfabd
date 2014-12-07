@@ -1,8 +1,7 @@
 import std.string;
 import std.stdio;
 import core.memory;
-import libfab;
-import cfab = libfab.fab;
+import fabd;
 
 enum IMG = "/home/msoucy/Downloads/remyreddit.png";
 

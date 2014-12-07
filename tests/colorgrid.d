@@ -1,5 +1,5 @@
 import std.stdio;
-import libfab;
+import fabd;
 
 void main() {
 	foreach(int i; 0..256) {
