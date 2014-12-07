@@ -1,6 +1,9 @@
 language: d
 
 install:
+  - git clone https://github.com/rossdylan/libfab
+  - make -C libfab
+  - sudo make -C libfab install
   - sudo apt-get update
   - sudo apt-get install -y imagemagick libmagickwand4 libmagickwand-dev
   - DUB_VER=0.9.22
