@@ -1,4 +1,4 @@
-module libfab.fab;
+module fabd.fab;
 
 extern(C):
 

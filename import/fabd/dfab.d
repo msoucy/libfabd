@@ -1,6 +1,9 @@
-module libfab.dfab;
+/******************************************************************************
+ * D wrappers for the C functions
+ */
+module fabd.dfab;
 
-import cfab = libfab.fab;
+import cfab = fabd.fab;
 alias Color = cfab.Color;
 
 import std.string;

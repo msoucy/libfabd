@@ -1,14 +1,13 @@
 import std.string;
 import std.stdio;
 import std.typetuple;
-import libfab;
-import libfab.fab;
+import fabd;
 
 enum BASECOLORS = TypeTuple!("BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE");
 enum TSTRING = "Hello There";
 
 void main() {
-	with(libfab.Color) {
+	with(Color) {
 		foreach(fmt; TypeTuple!(BOLD, ITALIC, UNDER, UNDER2, STRIKE, BLINK, FLIP)) {
 			"%s-ing it up: '%s'".writefln(fmt, TSTRING.apply_color(fmt));
 		}
