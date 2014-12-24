@@ -1,48 +1,71 @@
-/******************************************************************************
- * D wrappers for the C functions
- */
+/++
+	D wrappers for the C functions
+
+	Authors: Matthew Soucy, msoucy@csh.rit.edu
+	License: Subject to the terms of the MIT license, as written in the included LICENSE file.
++/
 module fabd.dfab;
 
 import cfab = fabd.fab;
-alias Color = cfab.Color;
+import fabd.fab : Color, rgb_t;
 
-import std.string;
-import std.typecons;
-import std.conv;
+import std.string : toStringz;
+import std.conv : to;
+import std.traits : isSomeString;
 
 private string takeown(char* cptr)
 {
 	import core.stdc.string : strlen;
 	import core.stdc.stdlib : free;
+	// When fromStringz is in default repos (IE ldc on Fedora)
+	// it should be used instead of manually reimplementing it
 	auto dstr = cptr[0 .. strlen(cptr)].idup;
 	free(cptr);
 	return dstr;
 }
 
-private template MakeBinding(string name) {
-	string bindfunc(String)(String line, cfab.rgb_t c) {
-		return BindFunc(c, line);
-	}
-	string bindfunc(String)(cfab.rgb_t c, String line) {
-		return mixin("cfab."~name)(c, line.toStringz).takeown;
-	}
-	mixin("alias " ~ name ~ " = bindfunc;");
-}
+/++
+	Applies the color $(D c) to $(D text).
 
-string apply_color(String)(String line, Color c)
+	Returns the string created as a result
++/
+string apply_color(String)(String text, Color c)
+	if(isSomeString!String)
 {
-	return apply_color(c, line);
+	return cfab.apply_color(c, text.toStringz).takeown;
 }
-string apply_color(String)(Color c, String line)
+
+/++
+	Applies the $(D c) to the foreground of $(D text)
++/
+string foreground_256(String)(String text, rgb_t c)
+	if(isSomeString!String)
 {
-	return cfab.apply_color(c, line.toStringz).takeown;
+	return cfab.foreground_256(c, text.toStringz).takeown;
 }
 
-mixin MakeBinding!"foreground_256";
-mixin MakeBinding!"background_256";
-mixin MakeBinding!"highlight_256";
+/++
+	Applies the $(D c) to the background of $(D text)
++/
+string background_256(String)(String text, rgb_t c)
+	if(isSomeString!String)
+{
+	return cfab.background_256(c, text.toStringz).takeown;
+}
 
-cfab.rgb_t xterm_to_rgb(int xcolor)
+/++
+	Highlights $(D text) with the color $(D c)
++/
+string highlight_256(String)(String text, rgb_t c)
+	if(isSomeString!String)
+{
+	return cfab.highlight_256(c, text.toStringz).takeown;
+}
+
+/++
+	Converts an xterm color number into an RGB value
++/
+rgb_t xterm_to_rgb(int xcolor)
 {
 	auto res = cfab.xterm_to_rgb_i(xcolor);
 	return cfab.rgb_t(
@@ -52,38 +75,47 @@ cfab.rgb_t xterm_to_rgb(int xcolor)
 	);
 }
 
-auto rgb(int r, int g, int b) {
-	return cfab.rgb_t(r, g, b);
+/++
+	Create an $(D rgb_t)
+	Params:
+		r = The amount of red
+		g = The amount of green
+		b = The amount of blue
++/
+auto rgb(ubyte r, ubyte g, ubyte b) {
+	return rgb_t(r, g, b);
 }
 
-auto Image(string path)
+///Stores converted image data
+struct Image
 {
-	return new class Object {
-	public:
-		this()
-		{
-			data = cfab.image_to_xterm(path.toStringz);
-		}
-		void toString(scope void delegate(const(char)[]) sink) const
-		{
-			auto img_text = cfab.image_to_string(data);
-			scope(exit) core.stdc.stdlib.free(img_text);
-			sink(img_text.to!string);
+public:
+	/++
+		Load an image
+		Params:
+			path = The name of the file to load the image from
+	+/
+	this(string path)
+	{
+		auto xti = cfab.image_to_xterm(path.toStringz);
+		scope(exit) cfab.xcolor_image_free(xti);
+		image = cfab.image_to_string(xti).takeown;
+	}
+	/// Prints the image
+	void toString(scope void delegate(const(char)[]) sink) const
+	{
+		sink(image);
+	}
+private:
+	@disable this();
 
-		}
-		~this() {
-			cfab.xcolor_image_free(data);
-		}
-	public:
-		cfab.xcolor_image_t* data;
-	};
+	string image;
 }
 
 unittest {
 	// Test styles
-	import std.algorithm;
+	import std.algorithm : equal;
 	import std.range : chain;
-	import std.conv;
 	enum T = "Hello There";
 	auto test_generic(Color c, string prefix, string suffix)
 	{
@@ -102,9 +134,8 @@ unittest {
 
 unittest {
 	// Test colors
-	import std.algorithm;
-	import std.range;
-	import std.conv;
+	import std.algorithm : equal;
+	import std.range : chain;
 	enum T = "Hello There";
 	auto test_color(Color c, string prefix)
 	{
