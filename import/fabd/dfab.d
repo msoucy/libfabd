@@ -57,27 +57,24 @@ auto rgb(int r, int g, int b) {
 	return cfab.rgb_t(r, g, b);
 }
 
-auto Image(string path)
+struct Image
 {
-	return new class Object {
-	public:
-		this()
-		{
-			data = cfab.image_to_xterm(path.toStringz);
-		}
-		void toString(scope void delegate(const(char)[]) sink) const
-		{
-			auto img_text = cfab.image_to_string(data);
-			scope(exit) core.stdc.stdlib.free(img_text);
-			sink(img_text.to!string);
+public:
+	@disable this();
 
-		}
-		~this() {
-			cfab.xcolor_image_free(data);
-		}
-	public:
-		cfab.xcolor_image_t* data;
-	};
+	this(string path)
+	{
+		auto xti = cfab.image_to_xterm(path.toStringz);
+		scope(exit) cfab.xcolor_image_free(xti);
+		image = cfab.image_to_string(xti).takeown;
+	}
+	void toString(scope void delegate(const(char)[]) sink) const
+	{
+		sink(image);
+
+	}
+private:
+	string image;
 }
 
 unittest {
