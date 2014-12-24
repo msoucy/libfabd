@@ -49,7 +49,7 @@ char *foreground_256(rgb_t color, const(char)* line);
 char *background_256(rgb_t color, const(char)* line);
 char *highlight_256(rgb_t color, const(char)* line);
 
-struct xcolor_image_t {};
+struct xcolor_image_t {}
 
 int xterm_to_rgb_i(int);
 xcolor_image_t* image_to_xterm(const(char)*);
