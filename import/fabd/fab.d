@@ -1,7 +1,14 @@
+/++
+	D wrappers for the C functions
+
+	Authors: Matthew Soucy, msoucy@csh.rit.edu
+	License: Subject to the terms of the MIT license, as written in the included LICENSE file.
++/
 module fabd.fab;
 
 extern(C):
 
+/// Wrap a color or special effect
 enum Color {
     BOLD,
     ITALIC,
@@ -36,6 +43,7 @@ enum Color {
     BGWHITE
 }
 
+/// Wrap an RGB color value
 struct rgb_t {
 	int r;
 	int g;
@@ -43,11 +51,11 @@ struct rgb_t {
 }
 
 
-char *apply_color(Color c, const(char)* line);
+char* apply_color(Color c, const(char)* line);
 
-char *foreground_256(rgb_t color, const(char)* line);
-char *background_256(rgb_t color, const(char)* line);
-char *highlight_256(rgb_t color, const(char)* line);
+char* foreground_256(rgb_t color, const(char)* line);
+char* background_256(rgb_t color, const(char)* line);
+char* highlight_256(rgb_t color, const(char)* line);
 
 struct xcolor_image_t {}
 
