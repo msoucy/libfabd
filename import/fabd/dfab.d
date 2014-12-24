@@ -10,42 +10,32 @@ import std.string;
 import std.typecons;
 import std.conv;
 
-class CString {
-	this(char* ptr) {
-		raw = ptr;
-	}
-	void toString(scope void delegate(const(char)[]) sink) const
-	{
-		sink(raw.to!string);
-	}
-	immutable(char)* toStringz() pure nothrow
-	{
-		return cast(immutable(char)*)(raw);
-	}
-	~this() {
-		core.stdc.stdlib.free(raw);
-	}
-	char* raw;
-	alias raw this;
+private string takeown(char* cptr)
+{
+	import core.stdc.string : strlen;
+	import core.stdc.stdlib : free;
+	auto dstr = cptr[0 .. strlen(cptr)].idup;
+	free(cptr);
+	return dstr;
 }
 
 private template MakeBinding(string name) {
-	CString BindFunc(String)(String line, cfab.rgb_t c) {
+	string bindfunc(String)(String line, cfab.rgb_t c) {
 		return BindFunc(c, line);
 	}
-	CString BindFunc(String)(cfab.rgb_t c, String line) {
-		return new CString(mixin("cfab."~name)(c, line.toStringz));
+	string bindfunc(String)(cfab.rgb_t c, String line) {
+		return mixin("cfab."~name)(c, line.toStringz).takeown;
 	}
-	mixin("alias " ~ name ~ " = BindFunc;");
+	mixin("alias " ~ name ~ " = bindfunc;");
 }
 
-CString apply_color(String)(String line, Color c)
+string apply_color(String)(String line, Color c)
 {
 	return apply_color(c, line);
 }
-CString apply_color(String)(Color c, String line)
+string apply_color(String)(Color c, String line)
 {
-	return new CString(cfab.apply_color(c, line.toStringz));
+	return cfab.apply_color(c, line.toStringz).takeown;
 }
 
 mixin MakeBinding!"foreground_256";
@@ -77,8 +67,8 @@ auto Image(string path)
 		void toString(scope void delegate(const(char)[]) sink) const
 		{
 			auto img_text = cfab.image_to_string(data);
+			scope(exit) core.stdc.stdlib.free(img_text);
 			sink(img_text.to!string);
-			core.stdc.stdlib.free(img_text);
 
 		}
 		~this() {
