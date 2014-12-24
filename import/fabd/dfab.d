@@ -6,14 +6,15 @@ module fabd.dfab;
 import cfab = fabd.fab;
 alias Color = cfab.Color;
 
-import std.string;
-import std.typecons;
-import std.conv;
+import std.string : toStringz;
+import std.conv : to;
 
 private string takeown(char* cptr)
 {
 	import core.stdc.string : strlen;
 	import core.stdc.stdlib : free;
+	// When fromStringz is in default repos (IE ldc on Fedora)
+	// it should be used instead of manually reimplementing it
 	auto dstr = cptr[0 .. strlen(cptr)].idup;
 	free(cptr);
 	return dstr;
@@ -81,9 +82,8 @@ auto Image(string path)
 
 unittest {
 	// Test styles
-	import std.algorithm;
+	import std.algorithm : equal;
 	import std.range : chain;
-	import std.conv;
 	enum T = "Hello There";
 	auto test_generic(Color c, string prefix, string suffix)
 	{
@@ -102,9 +102,8 @@ unittest {
 
 unittest {
 	// Test colors
-	import std.algorithm;
-	import std.range;
-	import std.conv;
+	import std.algorithm : equal;
+	import std.range : chain;
 	enum T = "Hello There";
 	auto test_color(Color c, string prefix)
 	{
